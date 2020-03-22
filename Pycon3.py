@@ -1,10 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #esta é a versão mais atualizada, com melhor código
+#versão para python 3
 #depende dos pacotes wxpython
-import wx
+import wx.adv
 import sys, os
-import commands
+import subprocess
 from wx.lib.embeddedimage import PyEmbeddedImage 
 
 TRAY_TOOLTIP = 'System Tray Demo'
@@ -14,7 +15,7 @@ ON = "Som na Caixa!"
 OFF = "Headphone"
 
 def saida():
-	status, estado = commands.getstatusoutput("/usr/bin/amixer -c 1 sget \"Auto-Mute Mode\" | grep Item0 | cut -d\"'\" -f2")
+	status, estado = subprocess.getstatusoutput("/usr/bin/amixer -c 1 sget \"Auto-Mute Mode\" | grep Item0 | cut -d\"'\" -f2")
 	return estado
 
 def amute():
@@ -31,10 +32,10 @@ def amute():
 def create_menu_item(menu, label, func):
     item = wx.MenuItem(menu, -1, label)
     menu.Bind(wx.EVT_MENU, func, id=item.GetId())
-    menu.AppendItem(item)
+    menu.Append(item)
     return item
 
-class TaskBarIcon(wx.TaskBarIcon):
+class TaskBarIcon(wx.adv.TaskBarIcon):
 	def __init__(self, frame):
 		self.frame = frame
 		super(TaskBarIcon, self).__init__()
@@ -43,7 +44,7 @@ class TaskBarIcon(wx.TaskBarIcon):
 			self.set_icon(RED, OFF)
 		else:
 			self.set_icon(TRAY_ICON, ON)
-		self.Bind(wx.EVT_TASKBAR_LEFT_DOWN, self.on_left_down)
+		self.Bind(wx.adv.EVT_TASKBAR_LEFT_DOWN, self.on_left_down)
 	
 	def CreatePopupMenu(self):
 		menu = wx.Menu()
@@ -53,7 +54,7 @@ class TaskBarIcon(wx.TaskBarIcon):
 		return menu
 	
 	def set_icon(self, path, state):
-		icon = wx.IconFromBitmap(wx.Bitmap(path))
+		icon = wx.Icon(wx.Bitmap(path))
 		self.SetIcon(icon, state)
 	
 	def on_left_down(self, event):
